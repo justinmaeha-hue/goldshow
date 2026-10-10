@@ -1,0 +1,781 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101010">
+  <title>GoldShow | Watch. Enjoy. Earn.</title>
+  <style>
+    :root {
+      --gold: #f5c542;
+      --bg: #101010;
+      --panel: #1c1c1c;
+      --text: #ffffff;
+      --muted: #b9b9b9;
+      --border: #393939;
+      --green: #21b573;
+      --red: #ed5555;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      padding: 18px;
+      background: #171717;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    .logo { color: var(--gold); font-size: 23px; font-weight: bold; }
+    .tagline { color: var(--muted); font-size: 11px; margin-top: 4px; }
+
+    main {
+      width: min(100% - 24px, 900px);
+      margin: 20px auto 90px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 17px;
+      margin-bottom: 16px;
+    }
+
+    h1, h2, h3 { margin-top: 0; }
+    h2 { font-size: 20px; }
+    p { line-height: 1.5; }
+    .muted { color: var(--muted); font-size: 13px; }
+
+    .gold { color: var(--gold); }
+    .balance {
+      background: linear-gradient(135deg, #473400, #171717);
+      border: 1px solid #92701b;
+    }
+
+    .amount { font-size: 32px; font-weight: bold; margin: 12px 0; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+      gap: 12px;
+    }
+
+    .vip {
+      border: 1px solid #6f581b;
+      border-radius: 12px;
+      padding: 14px;
+      background: #202020;
+    }
+
+    .vip h3 { color: var(--gold); margin-bottom: 8px; }
+    .price { font-size: 22px; font-weight: bold; margin: 12px 0; }
+
+    button, .button {
+      border: 0;
+      background: var(--gold);
+      color: #171717;
+      padding: 12px 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+
+    button.secondary {
+      background: #333;
+      color: white;
+      border: 1px solid #555;
+    }
+
+    button.danger { background: var(--red); color: white; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    .full { width: 100%; }
+
+    input, select, textarea {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 7px 0 14px;
+      border-radius: 8px;
+      border: 1px solid #484848;
+      background: #111;
+      color: white;
+      font-size: 15px;
+    }
+
+    label { font-size: 13px; color: var(--muted); }
+
+    .nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      display: flex;
+      justify-content: space-around;
+      gap: 3px;
+      padding: 10px 4px;
+      padding-bottom: max(10px, env(safe-area-inset-bottom));
+      background: #191919;
+      border-top: 1px solid var(--border);
+    }
+
+    .nav button {
+      flex: 1;
+      background: transparent;
+      color: #ddd;
+      padding: 9px 3px;
+      font-size: 11px;
+    }
+
+    .nav button.active { color: var(--gold); }
+
+    .hidden { display: none !important; }
+    .status {
+      display: inline-block;
+      border-radius: 20px;
+      padding: 5px 9px;
+      background: #3c3217;
+      color: var(--gold);
+      font-size: 12px;
+    }
+
+    .notice {
+      border-left: 3px solid var(--gold);
+      padding: 10px;
+      background: #282414;
+      margin-bottom: 12px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .transaction {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    footer { text-align: center; color: var(--muted); font-size: 12px; padding: 20px; }
+
+    @media (max-width: 420px) {
+      .logo { font-size: 20px; }
+      .panel { padding: 13px; }
+      .nav button { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">GOLD<span style="color:white">SHOW</span></div>
+    <div class="tagline">WATCH • ENJOY • DISCOVER</div>
+  </div>
+  <button class="secondary" onclick="showPage('profile')">My Account</button>
+</header>
+
+<main>
+  <div id="announcement" class="notice hidden"></div>
+
+  <!-- HOME -->
+  <section id="home" class="page">
+    <div class="panel balance">
+      <p class="gold">Available balance (demo)</p>
+      <div class="amount" id="balanceDisplay">K0.00</div>
+      <p class="muted">Only verified credits belong in your spendable balance.</p>
+      <div class="grid">
+        <button onclick="showPage('deposit')">Deposit</button>
+        <button class="secondary" onclick="showPage('withdraw')">Withdraw</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Welcome to <span class="gold">GoldShow</span></h2>
+      <p>Explore membership options, manage your account, and track your transactions in one place.</p>
+      <p class="muted">This is a demonstration website. It does not send or receive real money.</p>
+    </div>
+
+    <div class="panel">
+      <h2>VIP Memberships</h2>
+      <div id="homeVips" class="grid"></div>
+    </div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section id="products" class="page hidden">
+    <div class="panel">
+      <h2>My Products</h2>
+      <p class="muted">Membership requests and current membership status.</p>
+      <div id="myProducts"></div>
+    </div>
+    <div class="panel">
+      <h2>Available VIP Levels</h2>
+      <div id="productVips" class="grid"></div>
+    </div>
+  </section>
+
+  <!-- PROFILE -->
+  <section id="profile" class="page hidden">
+    <div class="panel">
+      <h2>My Profile</h2>
+      <div id="profileDetails">You are using the public demo.</div>
+      <button class="secondary" onclick="showPage('register')">Create Account</button>
+      <button onclick="showPage('login')">Login</button>
+      <button class="secondary" onclick="logout()">Log out</button>
+    </div>
+    <div class="panel">
+      <h2>My Referral</h2>
+      <label>Your referral code</label>
+      <input id="referralCode" readonly value="GOLD-DEMO">
+      <button onclick="copyReferral()">Copy Referral Code</button>
+      <p id="referralCount">People invited: 0</p>
+      <p class="muted">Referral counts shown here are demonstration data.</p>
+    </div>
+  </section>
+
+  <!-- REGISTER -->
+  <section id="register" class="page hidden">
+    <div class="panel">
+      <h2>Create GoldShow Account</h2>
+      <form id="registerForm">
+        <label>Phone number</label>
+        <input id="regPhone" type="tel" placeholder="e.g. 675XXXXXXXX" required>
+
+        <label>Login password (exactly 8 digits)</label>
+        <input id="regPassword" type="password" inputmode="numeric"
+          pattern="[0-9]{8}" minlength="8" maxlength="8" required>
+
+        <label>Withdrawal PIN (choose 6 or 7 digits when the final system is configured)</label>
+        <input id="regPin" type="password" inputmode="numeric"
+          pattern="[0-9]{6,7}" minlength="6" maxlength="7" required>
+
+        <label>Referral code (filled from a referral link when available)</label>
+        <input id="regReferral" placeholder="Referral code (optional)">
+
+        <p class="muted">Demo only: do not use a real password or PIN here. This page does not securely register accounts.</p>
+        <button class="full" type="submit">Create Demo Account</button>
+      </form>
+      <p>Already registered? <a href="#" onclick="showPage('login');return false;">Log in</a></p>
+    </div>
+  </section>
+
+  <!-- LOGIN -->
+  <section id="login" class="page hidden">
+    <div class="panel">
+      <h2>Login</h2>
+      <form id="loginForm">
+        <label>Phone number</label>
+        <input id="loginPhone" type="tel" required>
+        <label>8-digit login password</label>
+        <input id="loginPassword" type="password" inputmode="numeric"
+          pattern="[0-9]{8}" maxlength="8" required>
+        <button class="full" type="submit">Login</button>
+      </form>
+      <p class="muted">Secure login, SMS verification, and password recovery require a backend.</p>
+    </div>
+  </section>
+
+  <!-- DEPOSIT -->
+  <section id="deposit" class="page hidden">
+    <div class="panel">
+      <h2>Deposit / Top Up</h2>
+      <p>Choose the amount you want to deposit and submit a receipt for review.</p>
+      <form id="depositForm">
+        <label>Deposit amount (PGK)</label>
+        <input id="depositAmount" type="number" min="1" step="0.01" required placeholder="Enter amount in kina">
+
+        <label>Payment reference number</label>
+        <input id="depositReference" maxlength="100" required placeholder="Reference from your payment">
+
+        <label>Payment receipt image</label>
+        <input id="receiptImage" type="file" accept="image/jpeg,image/png,image/webp" required>
+        <p class="muted">Demo: the receipt is not sent to an administrator. A secure server must validate the actual payment.</p>
+        <button class="full" type="submit">Submit Deposit for Review</button>
+      </form>
+      <div id="depositMessage"></div>
+    </div>
+  </section>
+
+  <!-- WITHDRAW -->
+  <section id="withdraw" class="page hidden">
+    <div class="panel">
+      <h2>Withdraw Funds</h2>
+      <p>Minimum: <b class="gold">K25</b> · Maximum: <b class="gold">K5,000</b></p>
+      <form id="withdrawForm">
+        <label>Amount (PGK)</label>
+        <input id="withdrawAmount" type="number" min="25" max="5000" step="0.01" required>
+
+        <label>Withdrawal PIN</label>
+        <input id="withdrawPin" type="password" inputmode="numeric"
+          pattern="[0-9]{6,7}" maxlength="7" required>
+
+        <label>Payment destination / account details</label>
+        <input id="withdrawDestination" required maxlength="150"
+          placeholder="Enter your verified payment destination">
+
+        <p class="muted">Requests are subject to available balance, account verification, and admin review.</p>
+        <button class="full" type="submit">Submit Withdrawal Request</button>
+      </form>
+      <div id="withdrawMessage"></div>
+    </div>
+  </section>
+
+  <!-- REWARDS -->
+  <section id="rewards" class="page hidden">
+    <div class="panel">
+      <h2>Rewards & Transactions</h2>
+      <p class="muted">Demo points are not cash and cannot be withdrawn.</p>
+      <div id="transactions"></div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="page hidden">
+    <div class="panel">
+      <h2>Contact GoldShow</h2>
+      <p>For assistance, contact the administrator.</p>
+      <a class="button" href="https://wa.me/67570237711" target="_blank" rel="noopener">Contact on WhatsApp</a>
+      <p class="muted">Add your official Telegram link when available.</p>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="page hidden">
+    <div class="panel">
+      <h2>About GoldShow</h2>
+      <p>GoldShow is a website and app prototype for account management, memberships, deposits, and withdrawal request tracking.</p>
+      <p class="muted">No real deposits, cash earnings, or payments are processed by this demonstration.</p>
+    </div>
+  </section>
+
+  <!-- ADMIN -->
+  <section id="admin" class="page hidden">
+    <div class="panel">
+      <h2>Admin Dashboard</h2>
+      <p class="notice">Demo controls only. This page has no secure admin login and must not be used to manage real funds.</p>
+      <h3>Announcement</h3>
+      <label>Announcement title</label>
+      <input id="announcementTitle" placeholder="Announcement title">
+      <label>Message</label>
+      <textarea id="announcementText" placeholder="Write your announcement"></textarea>
+      <button onclick="saveAnnouncement()">Publish Demo Announcement</button>
+    </div>
+
+    <div class="panel">
+      <h3>Deposit & VIP Requests</h3>
+      <div id="adminDeposits"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Withdrawal Requests</h3>
+      <div id="adminWithdrawals"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Account Summary</h3>
+      <p id="adminSummary">Demo data only.</p>
+    </div>
+  </section>
+
+  <footer>GoldShow © 2026 · Prototype · Use responsibly</footer>
+</main>
+
+<nav class="nav">
+  <button class="active" data-page="home" onclick="showPage('home')">⌂<br>Home</button>
+  <button data-page="products" onclick="showPage('products')">◇<br>Products</button>
+  <button data-page="profile" onclick="showPage('profile')">♙<br>Profile</button>
+  <button data-page="rewards" onclick="showPage('rewards')">☆<br>History</button>
+  <button data-page="contact" onclick="showPage('contact')">✉<br>Contact</button>
+  <button data-page="admin" onclick="showPage('admin')">⚙<br>Admin</button>
+</nav>
+
+<script>
+  const VIPS = [
+    {name:"VIP 1", price:50, duration:"365 days"},
+    {name:"VIP 2", price:150, duration:"365 days"},
+    {name:"VIP 3", price:250, duration:"2 years"},
+    {name:"VIP 4", price:360, duration:"2 years"},
+    {name:"VIP 5", price:500, duration:"3 years"},
+    {name:"VIP 6", price:1000, duration:"3 years"},
+    {name:"VIP 7", price:3800, duration:"3 years"}
+  ];
+
+  const KEY = "goldshow_public_demo_v1";
+  let state = loadState();
+  let currentPage = "home";
+
+  function loadState() {
+    try {
+      return JSON.parse(localStorage.getItem(KEY)) || {
+        balance: 0, user: null, deposits: [], withdrawals: [],
+        products: [], transactions: [], announcement: null, inviteCount: 0
+      };
+    } catch {
+      return {
+        balance: 0, user: null, deposits: [], withdrawals: [],
+        products: [], transactions: [], announcement: null, inviteCount: 0
+      };
+    }
+  }
+
+  function save() {
+    localStorage.setItem(KEY, JSON.stringify(state));
+    render();
+  }
+
+  function money(n) {
+    return "K" + Number(n || 0).toLocaleString("en-PG", {
+      minimumFractionDigits: 2, maximumFractionDigits: 2
+    });
+  }
+
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, c => ({
+      "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+    })[c]);
+  }
+
+  function showPage(page) {
+    currentPage = page;
+    document.querySelectorAll(".page").forEach(el =>
+      el.classList.toggle("hidden", el.id !== page)
+    );
+    document.querySelectorAll(".nav button").forEach(btn =>
+      btn.classList.toggle("active", btn.dataset.page === page)
+    );
+    window.scrollTo(0, 0);
+    render();
+  }
+
+  function renderVIPs() {
+    const html = VIPS.map(v => `
+      <div class="vip">
+        <h3>${v.name}</h3>
+        <div class="price">${money(v.price)}</div>
+        <p class="muted">Membership duration: ${v.duration}</p>
+        <button class="full" onclick="requestVIP('${v.name}')">Select ${v.name}</button>
+      </div>
+    `).join("");
+    document.getElementById("homeVips").innerHTML = html;
+    document.getElementById("productVips").innerHTML = html;
+  }
+
+  function render() {
+    document.getElementById("balanceDisplay").textContent = money(state.balance);
+    document.getElementById("referralCount").textContent =
+      "People invited: " + (state.inviteCount || 0);
+
+    const profile = document.getElementById("profileDetails");
+    profile.innerHTML = state.user
+      ? `<p>Phone: ${escapeHTML(state.user.phone)}</p>
+         <p>Referral code: ${escapeHTML(state.user.referralCode)}</p>`
+      : "<p>No demo account is logged in.</p>";
+
+    document.getElementById("myProducts").innerHTML =
+      state.products.length
+        ? state.products.map(p => `<div class="transaction">
+            <b>${escapeHTML(p.name)}</b> — ${money(p.price)}
+            <p><span class="status">${escapeHTML(p.status)}</span></p>
+          </div>`).join("")
+        : '<p class="muted">No membership requests yet.</p>';
+
+    document.getElementById("transactions").innerHTML =
+      state.transactions.length
+        ? [...state.transactions].reverse().map(t => `<div class="transaction">
+            <b>${escapeHTML(t.title)}</b>
+            <div>${escapeHTML(t.detail)}</div>
+            <span class="status">${escapeHTML(t.status)}</span>
+          </div>`).join("")
+        : '<p class="muted">No transactions yet.</p>';
+
+    document.getElementById("adminDeposits").innerHTML =
+      state.deposits.length
+        ? state.deposits.map(d => `<div class="transaction">
+            <b>${escapeHTML(d.phone)} — ${money(d.amount)}</b>
+            <p>Reference: ${escapeHTML(d.reference)}</p>
+            <p>Receipt filename: ${escapeHTML(d.fileName)}</p>
+            <span class="status">${escapeHTML(d.status)}</span>
+            ${d.status === "Under review" ? `
+              <button onclick="approveDeposit('${d.id}')">Approve demo deposit</button>
+              <button class="danger" onclick="rejectDeposit('${d.id}')">Reject</button>
+            ` : ""}
+          </div>`).join("")
+        : '<p class="muted">No deposit requests.</p>';
+
+    document.getElementById("adminWithdrawals").innerHTML =
+      state.withdrawals.length
+        ? state.withdrawals.map(w => `<div class="transaction">
+            <b>${escapeHTML(w.phone)} — ${money(w.amount)}</b>
+            <p>${escapeHTML(w.destination)}</p>
+            <span class="status">${escapeHTML(w.status)}</span>
+            ${w.status === "Under review" ? `
+              <button onclick="approveWithdrawal('${w.id}')">Approve demo request</button>
+              <button class="danger" onclick="rejectWithdrawal('${w.id}')">Reject</button>
+            ` : ""}
+          </div>`).join("")
+        : '<p class="muted">No withdrawal requests.</p>';
+
+    document.getElementById("adminSummary").textContent =
+      "Demo accounts: " + (state.user ? 1 : 0) +
+      " | Deposit requests: " + state.deposits.length +
+      " | Withdrawal requests: " + state.withdrawals.length;
+
+    const announcement = document.getElementById("announcement");
+    if (state.announcement && state.announcement.message) {
+      announcement.classList.remove("hidden");
+      announcement.innerHTML = `<b>${escapeHTML(state.announcement.title)}</b><br>${escapeHTML(state.announcement.message)}`;
+    } else {
+      announcement.classList.add("hidden");
+      announcement.textContent = "";
+    }
+
+    renderVIPs();
+  }
+
+  function requestVIP(name) {
+    const v = VIPS.find(item => item.name === name);
+    if (!v) return;
+
+    if (!state.user) {
+      alert("Create a demo account first. This prototype does not process real purchases.");
+      showPage("register");
+      return;
+    }
+
+    if (state.products.some(p => p.name === name &&
+        ["Under review", "Active"].includes(p.status))) {
+      alert("You already have a pending or active request for this VIP level.");
+      return;
+    }
+
+    state.products.push({
+      id: crypto.randomUUID(), name: v.name, price: v.price,
+      duration: v.duration, status: "Deposit required"
+    });
+    state.transactions.push({
+      title: "VIP request", detail: name + " selected",
+      status: "Deposit required"
+    });
+    save();
+    showPage("products");
+    alert("VIP selected. Submit a deposit for review. No real purchase has occurred.");
+  }
+
+  document.getElementById("registerForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const phone = document.getElementById("regPhone").value.trim();
+    const password = document.getElementById("regPassword").value;
+    const pin = document.getElementById("regPin").value;
+    const referral = document.getElementById("regReferral").value.trim();
+
+    if (!/^\d{8}$/.test(password)) {
+      alert("Login password must be exactly 8 digits.");
+      return;
+    }
+    if (!/^\d{6,7}$/.test(pin)) {
+      alert("Withdrawal PIN must be 6 or 7 digits in this demo.");
+      return;
+    }
+
+    // Do not store real credentials. This demo intentionally discards them.
+    state.user = {
+      phone,
+      referralCode: "GS-" + Math.random().toString(36).slice(2, 8).toUpperCase(),
+      referredBy: referral || null
+    };
+    save();
+    alert("Demo account created. No password or PIN was saved. This is not secure real registration.");
+    showPage("profile");
+  });
+
+  document.getElementById("loginForm").addEventListener("submit", e => {
+    e.preventDefault();
+    alert("Secure login is not implemented in this front-end demo. Connect a backend before using real accounts.");
+  });
+
+  document.getElementById("depositForm").addEventListener("submit", e => {
+    e.preventDefault();
+    if (!state.user) {
+      alert("Create a demo account first.");
+      showPage("register");
+      return;
+    }
+
+    const amount = Number(document.getElementById("depositAmount").value);
+    const reference = document.getElementById("depositReference").value.trim();
+    const file = document.getElementById("receiptImage").files[0];
+
+    if (!Number.isFinite(amount) || amount <= 0 || !reference || !file) {
+      alert("Enter a valid amount, reference, and receipt image.");
+      return;
+    }
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      alert("Upload a JPEG, PNG, or WebP image.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Image must be 5 MB or smaller.");
+      return;
+    }
+
+    state.deposits.push({
+      id: crypto.randomUUID(), phone: state.user.phone, amount,
+      reference, fileName: file.name, status: "Under review"
+    });
+    state.transactions.push({
+      title: "Deposit submitted", detail: money(amount),
+      status: "Under review"
+    });
+    save();
+    document.getElementById("depositMessage").innerHTML =
+      '<p class="status">Under review</p><p class="muted">Demo request only. The receipt has not been uploaded to a server.</p>';
+    e.target.reset();
+  });
+
+  document.getElementById("withdrawForm").addEventListener("submit", e => {
+    e.preventDefault();
+    if (!state.user) {
+      alert("Create a demo account first.");
+      showPage("register");
+      return;
+    }
+
+    const amount = Number(document.getElementById("withdrawAmount").value);
+    const pin = document.getElementById("withdrawPin").value;
+    const destination = document.getElementById("withdrawDestination").value.trim();
+
+    if (!Number.isFinite(amount) || amount < 25 || amount > 5000) {
+      alert("Withdrawal must be between K25 and K5,000.");
+      return;
+    }
+    if (!/^\d{6,7}$/.test(pin)) {
+      alert("Enter a withdrawal PIN with 6 or 7 digits.");
+      return;
+    }
+    if (amount > state.balance) {
+      alert("Insufficient available demo balance.");
+      return;
+    }
+    if (!destination) {
+      alert("Enter a payment destination.");
+      return;
+    }
+
+    // Reserve the balance immediately to prevent repeat demo requests.
+    state.balance = Math.round((state.balance - amount) * 100) / 100;
+    state.withdrawals.push({
+      id: crypto.randomUUID(), phone: state.user.phone, amount,
+      destination, status: "Under review"
+    });
+    state.transactions.push({
+      title: "Withdrawal request", detail: money(amount),
+      status: "Under review"
+    });
+    save();
+    document.getElementById("withdrawMessage").innerHTML =
+      '<p class="status">Under review</p><p class="muted">Demo request only. No payment has been sent.</p>';
+    e.target.reset();
+  });
+
+  function approveDeposit(id) {
+    const d = state.deposits.find(item => item.id === id);
+    if (!d || d.status !== "Under review") return;
+    if (!confirm("Demo only: mark this deposit as reviewed and credit the demo balance? This does not verify a real payment.")) return;
+
+    d.status = "Approved (demo)";
+    state.balance = Math.round((state.balance + d.amount) * 100) / 100;
+    state.transactions.push({
+      title: "Demo deposit credit", detail: money(d.amount),
+      status: "Approved (demo)"
+    });
+    save();
+  }
+
+  function rejectDeposit(id) {
+    const d = state.deposits.find(item => item.id === id);
+    if (!d || d.status !== "Under review") return;
+    d.status = "Rejected";
+    save();
+  }
+
+  function approveWithdrawal(id) {
+    const w = state.withdrawals.find(item => item.id === id);
+    if (!w || w.status !== "Under review") return;
+    if (!confirm("Mark as approved for demo purposes? This does not send money.")) return;
+    w.status = "Approved — payment not sent";
+    state.transactions.push({
+      title: "Withdrawal approved", detail: money(w.amount),
+      status: "Payment not sent"
+    });
+    save();
+  }
+
+  function rejectWithdrawal(id) {
+    const w = state.withdrawals.find(item => item.id === id);
+    if (!w || w.status !== "Under review") return;
+    w.status = "Rejected";
+    state.balance = Math.round((state.balance + w.amount) * 100) / 100;
+    state.transactions.push({
+      title: "Withdrawal returned", detail: money(w.amount),
+      status: "Returned to demo balance"
+    });
+    save();
+  }
+
+  function saveAnnouncement() {
+    const title = document.getElementById("announcementTitle").value.trim();
+    const message = document.getElementById("announcementText").value.trim();
+    if (!title || !message) {
+      alert("Enter an announcement title and message.");
+      return;
+    }
+    state.announcement = { title, message };
+    save();
+    alert("Demo announcement saved in this browser only.");
+  }
+
+  async function copyReferral() {
+    const code = document.getElementById("referralCode").value;
+    try {
+      await navigator.clipboard.writeText(code);
+      alert("Referral code copied.");
+    } catch {
+      alert("Your referral code is " + code);
+    }
+  }
+
+  function logout() {
+    alert("Demo logout. No real authenticated session exists.");
+  }
+
+  // Fill referral field from ?ref=CODE in a referral URL.
+  const params = new URLSearchParams(location.search);
+  if (params.get("ref")) {
+    document.getElementById("regReferral").value =
+      params.get("ref").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 50);
+  }
+
+  render();
+</script>
+</body>
+</html>
